@@ -1,0 +1,104 @@
+{
+  "info": {
+    "name": "LedgerSync API",
+    "description": "Portfolio walkthrough for the transaction ledger and reconciliation platform.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "transactionReference", "value": "REPLACE_AFTER_TRANSFER" },
+    { "key": "runId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "1 - Create source account",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountNumber\": \"ACC001\",\n  \"customerName\": \"Asha\",\n  \"initialBalance\": 10000.00,\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": "{{baseUrl}}/api/accounts"
+      }
+    },
+    {
+      "name": "2 - Create destination account",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"accountNumber\": \"ACC002\",\n  \"customerName\": \"Ravi\",\n  \"initialBalance\": 5000.00,\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": "{{baseUrl}}/api/accounts"
+      }
+    },
+    {
+      "name": "3 - Transfer funds",
+      "event": [{
+        "listen": "test",
+        "script": {
+          "exec": [
+            "if (pm.response.code === 201) {",
+            "  pm.collectionVariables.set('transactionReference', pm.response.json().referenceNumber);",
+            "}"
+          ]
+        }
+      }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sourceAccount\": \"ACC001\",\n  \"destinationAccount\": \"ACC002\",\n  \"amount\": 500.00,\n  \"idempotencyKey\": \"POSTMAN-DEMO-001\"\n}"
+        },
+        "url": "{{baseUrl}}/api/transfers"
+      }
+    },
+    {
+      "name": "4 - Get source statement",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/accounts/ACC001/statement"
+      }
+    },
+    {
+      "name": "5 - Run integrity check",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{baseUrl}}/api/integrity-check"
+      }
+    },
+    {
+      "name": "6 - Reverse transfer",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "{{baseUrl}}/api/transfers/{{transactionReference}}/reverse"
+      }
+    },
+    {
+      "name": "7 - Upload settlement CSV",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [{ "key": "file", "type": "file", "src": "" }]
+        },
+        "url": "{{baseUrl}}/api/reconciliation/upload"
+      }
+    },
+    {
+      "name": "8 - Get reconciliation mismatches",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/reconciliation/{{runId}}/mismatches"
+      }
+    }
+  ]
+}
