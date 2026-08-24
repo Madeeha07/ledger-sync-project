@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LedgerSync - Financial Ledger Platform</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+    <div class="logo-section">
+        <h1>LedgerSync</h1>
+        <p>Financial Transaction Ledger & Reconciliation Platform</p>
+    </div>
+
+    <div id="serverStatus" class="server-status">
+        Checking backend...
+    </div>
+</header>
+
+
+<!-- MAIN CONTAINER -->
+<div class="container">
+
+    <!-- MESSAGE BOX -->
+    <div id="message"></div>
+
+
+    <!-- NAVIGATION -->
+    <nav>
+
+        <button class="nav-btn active"
+                onclick="showSection('dashboard', this)">
+            Dashboard
+        </button>
+
+        <button class="nav-btn"
+                onclick="showSection('accounts', this)">
+            Accounts
+        </button>
+
+        <button class="nav-btn"
+                onclick="showSection('transfers', this)">
+            Transfers
+        </button>
+
+        <button class="nav-btn"
+                onclick="showSection('reconciliation', this)">
+            Reconciliation
+        </button>
+
+        <button class="nav-btn"
+                onclick="showSection('integrity', this)">
+            Integrity Check
+        </button>
+
+    </nav>
+
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <section id="dashboard" class="section active-section">
+
+        <div class="dashboard-card">
+
+            <h2>Welcome to LedgerSync</h2>
+
+            <p>
+                LedgerSync is a financial transaction management platform.
+                It allows users to create accounts, transfer money between
+                accounts, maintain ledger records, prevent duplicate
+                transactions, reverse transactions and reconcile internal
+                transactions with external settlement records.
+            </p>
+
+        </div>
+
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+                <h3>Accounts</h3>
+                <p>Create and manage financial accounts.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Transfers</h3>
+                <p>Transfer funds safely between accounts.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Ledger</h3>
+                <p>Maintain debit and credit transaction records.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Reconciliation</h3>
+                <p>Compare internal transactions with settlement data.</p>
+            </div>
+
+            <div class="feature-card">
+                <h3>Integrity</h3>
+                <p>Verify the correctness of financial transactions.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= ACCOUNTS ================= -->
+
+    <section id="accounts" class="section">
+
+        <h2>Account Management</h2>
+
+
+        <div class="grid">
+
+            <!-- CREATE ACCOUNT -->
+
+            <div class="card">
+
+                <h3>Create Account</h3>
+
+                <label>Account Number</label>
+                <input
+                        type="text"
+                        id="accountNumber"
+                        placeholder="Example: ACC001"
+                >
+
+                <label>Customer Name</label>
+                <input
+                        type="text"
+                        id="customerName"
+                        placeholder="Example: Madeeha"
+                >
+
+                <label>Initial Balance</label>
+                <input
+                        type="number"
+                        id="initialBalance"
+                        placeholder="Example: 10000"
+                >
+
+                <button onclick="createAccount()">
+                    Create Account
+                </button>
+
+            </div>
+
+
+            <!-- GET ACCOUNT -->
+
+            <div class="card">
+
+                <h3>Get Account</h3>
+
+                <label>Account Number</label>
+
+                <input
+                        type="text"
+                        id="getAccountNumber"
+                        placeholder="Example: ACC001"
+                >
+
+                <button onclick="getAccount()">
+                    Get Account
+                </button>
+
+                <pre id="accountResult">
+Response will appear here.
+                    </pre>
+
+            </div>
+
+
+            <!-- ACCOUNT STATEMENT -->
+
+            <div class="card">
+
+                <h3>Account Statement</h3>
+
+                <label>Account Number</label>
+
+                <input
+                        type="text"
+                        id="statementAccountNumber"
+                        placeholder="Example: ACC001"
+                >
+
+                <button onclick="getStatement()">
+                    View Statement
+                </button>
+
+                <pre id="statementResult">
+Statement will appear here.
+                    </pre>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= TRANSFERS ================= -->
+
+    <section id="transfers" class="section">
+
+        <h2>Fund Transfers</h2>
+
+
+        <div class="grid">
+
+            <!-- CREATE TRANSFER -->
+
+            <div class="card">
+
+                <h3>Create Transfer</h3>
+
+                <label>Source Account</label>
+
+                <input
+                        type="text"
+                        id="sourceAccount"
+                        placeholder="Example: ACC001"
+                >
+
+                <label>Destination Account</label>
+
+                <input
+                        type="text"
+                        id="destinationAccount"
+                        placeholder="Example: ACC002"
+                >
+
+                <label>Amount</label>
+
+                <input
+                        type="number"
+                        id="transferAmount"
+                        placeholder="Example: 500"
+                >
+
+                <label>Idempotency Key</label>
+
+                <input
+                        type="text"
+                        id="idempotencyKey"
+                        placeholder="Example: TRANSFER-001"
+                >
+
+                <button onclick="createTransfer()">
+                    Transfer Funds
+                </button>
+
+                <pre id="transferResult">
+Transfer result will appear here.
+                    </pre>
+
+            </div>
+
+
+            <!-- GET / REVERSE TRANSFER -->
+
+            <div class="card">
+
+                <h3>Find or Reverse Transfer</h3>
+
+                <label>Transaction Reference</label>
+
+                <input
+                        type="text"
+                        id="referenceNumber"
+                        placeholder="Example: TXN-12345"
+                >
+
+                <button onclick="getTransfer()">
+                    Get Transfer
+                </button>
+
+                <button
+                        class="danger-btn"
+                        onclick="reverseTransfer()"
+                >
+                    Reverse Transfer
+                </button>
+
+                <pre id="transferLookupResult">
+Transaction details will appear here.
+                    </pre>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= RECONCILIATION ================= -->
+
+    <section id="reconciliation" class="section">
+
+        <h2>Settlement Reconciliation</h2>
+
+
+        <div class="grid">
+
+            <!-- CSV UPLOAD -->
+
+            <div class="card">
+
+                <h3>Upload Settlement File</h3>
+
+                <p>
+                    Upload an external settlement CSV file and compare it
+                    with the transactions recorded in the LedgerSync system.
+                </p>
+
+                <input
+                        type="file"
+                        id="csvFile"
+                        accept=".csv"
+                >
+
+                <button onclick="uploadCsv()">
+                    Upload and Reconcile
+                </button>
+
+                <pre id="uploadResult">
+Upload result will appear here.
+                    </pre>
+
+            </div>
+
+
+            <!-- RECONCILIATION RESULT -->
+
+            <div class="card">
+
+                <h3>Reconciliation Results</h3>
+
+                <label>Run ID</label>
+
+                <input
+                        type="text"
+                        id="runId"
+                        placeholder="Example: 1"
+                >
+
+                <button onclick="getReconciliation()">
+                    Get Summary
+                </button>
+
+                <button onclick="getMismatches()">
+                    Get Mismatches
+                </button>
+
+                <pre id="reconciliationResult">
+Reconciliation result will appear here.
+                    </pre>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= INTEGRITY CHECK ================= -->
+
+    <section id="integrity" class="section">
+
+        <h2>Financial Integrity Check</h2>
+
+        <div class="card">
+
+            <p>
+                This feature checks completed and reversed transactions
+                to verify whether the corresponding financial ledger
+                entries are correct.
+            </p>
+
+            <button onclick="runIntegrityCheck()">
+                Run Integrity Check
+            </button>
+
+            <pre id="integrityResult">
+Integrity check result will appear here.
+                </pre>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
